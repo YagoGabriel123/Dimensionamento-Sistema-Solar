@@ -1,12 +1,10 @@
 function calcularSistema() {
-    const nomeCliente = document.getElementById('nomeCliente').value;
-    const contato = document.getElementById('contato').value;
-    const endereco = document.getElementById('endereco').value;
     const tipoLigacao = document.getElementById('tipoLigacao').value;
     const consumoMensal = parseFloat(document.getElementById('consumoMensal').value);
     const potenciaPainel = document.getElementById('potenciaPainel').value;
 
     let marcaPainel, potenciaNominal, correnteMaximaPainel, correnteCurtoCircuito, tensaoPainel, tensaoCircuitoAberto;
+
     if (potenciaPainel === "610") {
         marcaPainel = "DAH";
         potenciaNominal = 610;
@@ -38,83 +36,88 @@ function calcularSistema() {
     const hsp = 5.67;
     const diasPorMes = 30;
     const eficiencia = 0.80;
+
     const consumoDiario = consumoMensal / diasPorMes;
     const energiaPorPainel = (potenciaNominal * hsp * eficiencia) / 1000;
     const numPaineis = Math.ceil(consumoDiario / energiaPorPainel);
     const potenciaTotalSistema = numPaineis * potenciaNominal;
     const potenciaInversorIdeal = Math.ceil(potenciaTotalSistema / 1000);
 
-    let minTensao, maxTensao, maxCorrente, numStrings, mensagem;
+    let minTensao, maxTensao, maxCorrente, numStrings = 1;
     if (tipoLigacao === 'trifasica') {
-        minTensao = 200;
-        maxTensao = 450;
-        maxCorrente = 40.00;
-        numStrings = 3;
+        minTensao = 180;
+        maxTensao = 850;
+        maxCorrente = 18.75;
     } else {
-        minTensao = 90;
-        maxTensao = 450;
-        maxCorrente = 40.00;
-        numStrings = 2;
+        minTensao = 80;
+        maxTensao = 550;
+        maxCorrente = 18.75;
+        numStrings = Math.min(3, numPaineis);
     }
 
-    mensagem = `
-        <p><strong>Nome do Cliente:</strong> ${nomeCliente}</p>
-        <p><strong>Contato:</strong> ${contato}</p>
-        <p><strong>Endereço:</strong> ${endereco}</p>
-        <p><strong>Tipo de Ligação:</strong> ${tipoLigacao}</p>
-        <p><strong>Marca do Painel:</strong> ${marcaPainel}</p>
-        <p><strong>Consumo Mensal:</strong> ${consumoMensal} kWh</p>
-        <p><strong>Quantidade de Painéis:</strong> ${numPaineis}</p>
-        <p><strong>Potência Total do Sistema:</strong> ${potenciaTotalSistema} W</p>
-        <p><strong>Potência do Inversor Ideal:</strong> ${potenciaInversorIdeal} kW</p>
-        <p><strong>Tensão Mínima:</strong> ${minTensao} V</p>
-        <p><strong>Tensão Máxima:</strong> ${maxTensao} V</p>
-        <p><strong>Corrente Máxima:</strong> ${maxCorrente} A</p>
-        <p><strong>Número de Strings:</strong> ${numStrings}</p>
-    `;
+    let paineisPorString = [];
+    let tensoesPorString = [];
+    let paineisRestantes = numPaineis;
+    let tensaoTotal = 0;
+    let numPaineisAtual = 0;
+
+    while (paineisRestantes > 0) {
+        if (tensaoTotal + tensaoPainel <= maxTensao) {
+            tensaoTotal += tensaoPainel;
+            numPaineisAtual++;
+            paineisRestantes--;
+        } else {
+            if (tensaoTotal >= minTensao) {
+                paineisPorString.push(numPaineisAtual);
+                tensoesPorString.push(tensaoTotal.toFixed(2));
+                tensaoTotal = 0;
+                numPaineisAtual = 0;
+            } else {
+                break;
+            }
+        }
+    }
+
+    if (numPaineisAtual > 0 && tensaoTotal >= minTensao) {
+        paineisPorString.push(numPaineisAtual);
+        tensoesPorString.push(tensaoTotal.toFixed(2));
+    }
+
+    let mensagem = `<p>Sistema dimensionado corretamente para uma ligação ${tipoLigacao}.</p>`;
+    mensagem += `<p>Quantidade de painéis necessários: <strong>${numPaineis}</strong></p>`;
+    mensagem += `<p>Potência total do sistema: <strong>${(potenciaTotalSistema / 1000).toFixed(2)} kW</strong></p>`;
+    mensagem += `<p>Potência Ideal do Inversor (0% overload): <strong>${potenciaInversorIdeal} kW</strong></p>`;
+
+    mensagem += `<p>Sugestões de Inversores:</p><ul>`;
+    mensagem += `<li>Inversor Ideal (0% overload): <strong>${potenciaInversorIdeal} kW</strong></li>`;
+    for (let i = 1; i <= 5; i++) {
+        const overload = (i * 10) / 100;
+        const potenciaSugerida = Math.floor(potenciaInversorIdeal * (1 - overload));
+        if (potenciaSugerida > 0) {
+            const overloadPercentage = (overload * 100).toFixed(1);
+            mensagem += `<li>Inversor com Overload ${overloadPercentage}%: <strong>${potenciaSugerida} kW</strong></li>`;
+        }
+    }
+    mensagem += `</ul>`;
+
+    mensagem += `<p>Detalhes do Painel Selecionado:</p>`;
+    mensagem += `<ul><li>Marca: ${marcaPainel}</li>`;
+    mensagem += `<li>Potência Nominal: ${potenciaNominal} W</li>`;
+    mensagem += `<li>Corrente Máxima: ${correnteMaximaPainel} A</li>`;
+    mensagem += `<li>Corrente de Curto Circuito: ${correnteCurtoCircuito} A</li>`;
+    mensagem += `<li>Tensão de Circuito Aberto (máxima): ${tensaoCircuitoAberto} V</li></ul>`;
+    
+    mensagem += `<p>Painéis por string e tensões:</p><ul>`;
+    for (let i = 0; i < paineisPorString.length; i++) {
+        mensagem += `<li>${paineisPorString[i]} painéis, tensão total: ${tensoesPorString[i]} V</li>`;
+    }
+    mensagem += `</ul>`;
 
     document.getElementById('resultado').innerHTML = mensagem;
-    document.getElementById('btnSalvarPDF').style.display = 'block';
+    document.getElementById("downloadPDF").style.display = "inline";
 }
 
 function salvarPDF() {
-    const elemento = document.getElementById('resultado');
-    const opcao = {
-        margin: 1,
-        filename: 'dimensionamento_solar.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
-    html2pdf().set(opcao).from(elemento).save();
-}
-
-let operandoAtual = "";
-let operacao = "";
-
-function adicionarNumero(numero) {
-    operandoAtual += numero;
-    document.getElementById("inputCalc").value = operandoAtual;
-}
-
-function realizarOperacao(op) {
-    operacao = op;
-    operandoAtual += op;
-    document.getElementById("inputCalc").value = operandoAtual;
-}
-
-function calcularResultado() {
-    try {
-        const resultado = eval(operandoAtual);
-        document.getElementById("resultadoCalc").textContent = "Resultado: " + resultado;
-        operandoAtual = resultado.toString();
-    } catch (error) {
-        document.getElementById("resultadoCalc").textContent = "Erro";
-    }
-}
-
-function limpar() {
-    operandoAtual = "";
-    document.getElementById("inputCalc").value = "";
-    document.getElementById("resultadoCalc").textContent = "";
+    const resultadoDiv = document.getElementById("resultado");
+    html2pdf().from(resultadoDiv).save("Dimensionamento_Solar.pdf");
 }
