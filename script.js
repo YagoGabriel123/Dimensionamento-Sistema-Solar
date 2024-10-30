@@ -10,22 +10,22 @@ function calcularSistema() {
         potenciaNominal = 610;
         correnteMaximaPainel = 13.68;
         correnteCurtoCircuito = 14.72;
-        tensaoPainel = 52.4;
-        tensaoCircuitoAberto = 52.4;
+        tensaoPainel = 44.6;
+        tensaoCircuitoAberto = 44.6;
     } else if (potenciaPainel === "555") {
         marcaPainel = "ZNShine Solar";
         potenciaNominal = 555;
         correnteMaximaPainel = 14.5;
         correnteCurtoCircuito = 15.35;
-        tensaoPainel = 46.2;
-        tensaoCircuitoAberto = 46.2;
+        tensaoPainel = 42.00;
+        tensaoCircuitoAberto = 42.00;
     } else if (potenciaPainel === "570") {
         marcaPainel = "PULLING";
         potenciaNominal = 570;
         correnteMaximaPainel = 14.28;
         correnteCurtoCircuito = 15.12;
-        tensaoPainel = 47.82;
-        tensaoCircuitoAberto = 47.82;
+        tensaoPainel = 39.91;
+        tensaoCircuitoAberto = 39.91;
     }
 
     if (consumoMensal <= 0) {
@@ -105,7 +105,7 @@ function calcularSistema() {
     mensagem += `<li>Potência Nominal: ${potenciaNominal} W</li>`;
     mensagem += `<li>Corrente Máxima: ${correnteMaximaPainel} A</li>`;
     mensagem += `<li>Corrente de Curto Circuito: ${correnteCurtoCircuito} A</li>`;
-    mensagem += `<li>Tensão de Circuito Aberto (máxima): ${tensaoCircuitoAberto} V</li></ul>`;
+    mensagem += `<li>Tensão Máxima de Operação: ${tensaoCircuitoAberto} V</li></ul>`;
     
     mensagem += `<p>Painéis por string e tensões:</p><ul>`;
     for (let i = 0; i < paineisPorString.length; i++) {
