@@ -4,21 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dimensionamento Solar RN</title>
-    <link rel="stylesheet" href="./styles/index.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Dimensionamento de Sistema Solar - RN</h1>
 
     <form id="solarForm">
-        <label for="nomeCliente">Nome do Cliente:</label>
-        <input type="text" id="nomeCliente" required>
-
-        <label for="contato">Contato:</label>
-        <input type="text" id="contato" required>
-
-        <label for="endereco">Endereço:</label>
-        <input type="text" id="endereco" required>
-
         <label for="tipoLigacao">Tipo de Ligação:</label>
         <select id="tipoLigacao" required>
             <option value="monofasica">Monofásica</option>
@@ -36,41 +27,12 @@
         </select>
 
         <button type="button" onclick="calcularSistema()">Calcular Sistema</button>
-
-        <div id="resultado" class="result"></div>
-        <button id="btnSalvarPDF" type="button" style="display:none;" onclick="salvarPDF()">Salvar em PDF</button>
     </form>
 
-    <div class="calc">
-        <h2>Calculadora Padrão</h2>
-        <input type="text" id="inputCalc" placeholder="0" readonly>
-        <div>
-            <button onclick="adicionarNumero('1')">1</button>
-            <button onclick="adicionarNumero('2')">2</button>
-            <button onclick="adicionarNumero('3')">3</button>
-            <button onclick="realizarOperacao('+')">+</button>
-        </div>
-        <div>
-            <button onclick="adicionarNumero('4')">4</button>
-            <button onclick="adicionarNumero('5')">5</button>
-            <button onclick="adicionarNumero('6')">6</button>
-            <button onclick="realizarOperacao('-')">-</button>
-        </div>
-        <div>
-            <button onclick="adicionarNumero('7')">7</button>
-            <button onclick="adicionarNumero('8')">8</button>
-            <button onclick="adicionarNumero('9')">9</button>
-            <button onclick="realizarOperacao('*')">*</button>
-        </div>
-        <div>
-            <button onclick="limpar()">C</button>
-            <button onclick="adicionarNumero('0')">0</button>
-            <button onclick="calcularResultado()">=</button>
-            <button onclick="realizarOperacao('/')">/</button>
-        </div>
-        <div id="resultadoCalc"></div>
-    </div>
+    <div id="resultado" class="result"></div>
+    <button id="downloadPDF" style="display:none;" onclick="salvarPDF()">Salvar em PDF</button>
 
-    <script src="./scripts/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
