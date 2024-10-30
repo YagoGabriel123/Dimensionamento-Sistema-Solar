@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dimensionamento Solar RN</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Dimensionamento de Sistema Solar - RN</h1>
+
+    <form id="solarForm">
+        <label for="tipoLigacao">Tipo de Ligação:</label>
+        <select id="tipoLigacao" required>
+            <option value="monofasica">Monofásica</option>
+            <option value="trifasica">Trifásica</option>
+        </select>
+
+        <label for="consumoMensal">Consumo Médio Mensal (kWh):</label>
+        <input type="number" id="consumoMensal" placeholder="Digite o consumo em kWh" min="1" required>
+
+        <label for="potenciaPainel">Selecione a Potência do Painel:</label>
+        <select id="potenciaPainel" required>
+            <option value="610">DAH - 610W</option>
+            <option value="555">ZNShine Solar - 555W</option>
+            <option value="570">PULLING - 570W</option>
+        </select>
+
+        <button type="button" onclick="calcularSistema()">Calcular Sistema</button>
+    </form>
+
+    <div id="resultado" class="result"></div>
+    <button id="downloadPDF" style="display:none;" onclick="salvarPDF()">Salvar em PDF</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
